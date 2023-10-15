@@ -8,24 +8,57 @@
 <body>
     <h1>StopWatch</h1>
     <div class="timerWrapper">
-        <div class="time">00:00:00</div>
+        <div class="time">00:00:00.000</div>
         <div class="buttonWrapper">
-            <button class="stert">START</button>
-            <button class="stop">STOP</button>
-            <button class="reset">RESET</button>
+            <button class="start">START</button>
+            <button class="stop" disabled>STOP</button>
+            <button class="reset" disabled>RESET</button>
         </div>
     </div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script type="text/javascript">
+
+$(function(){
     var startTime;
     var stopTime = 0;
     var timeoutId;
 
     function displayTime() {
         var currentTime = new Date(Date.now() - startTime + stopTime);
+        var h = String(currentTime.getHours()-9).padStart(2, '0');
+        var m = String(currentTime.getMinutes()).padStart(2, '0');
+        var s = String(currentTime.getSeconds()).padStart(2, '0');
+        var ms = String(currentTime.getMilliseconds()).padStart(3, '0');
+
+        $(".time").text(`${h}:${m}:${s}.${ms}`);
+        timeoutID = setTimeout(displayTime, 10);
     }
 
-    console.log(new Date(Date.now()));
+    $(".start").on("click", function(){
+        $(this).prop("disabled", true);
+        $(".stop").prop("disabled", false); 
+        $(".reset").prop("disabled", true);
+        startTime = Date.now();
+        displayTime();
+    });
+
+    $(".stop").on("click", function(){
+        $(".start").prop("disabled", false);
+        $(this).prop("disabled", true);
+        $(".reset").prop("disabled", false);
+        clearTimeout(timeoutID);
+        stopTime += (Date.now() - startTime);
+    });
+
+    $(".reset").on("click", function(){
+        $(".start").prop("disabled", false);
+        $(this).prop("disabled", true);
+        $(".reset").prop("disabled", true);
+        $(".time").text('00:00:00.000');
+        stopTime = 0;
+    });
+});
+
 </script>
 </html>
