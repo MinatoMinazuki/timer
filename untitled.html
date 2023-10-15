@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>timer</title>
+</head>
+<body>
+  <select class="minute">
+    <option value="25">25</option>
+    <option value="24">24</option>
+    <option value="23">23</option>
+  </select>
+  <span>分</span>
+  <select class="interval">
+    <option value="5">5</option>
+  </select>
+  <span>分</span>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+  $(function(){
+
+    var minutes;
+
+    $(".minute").change(function(){
+      minutes = $(".minute").val();
+
+      return minutes;
+    });
+
+    console.log(minutes);
+  });
+</script>
+</html>
