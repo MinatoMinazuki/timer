@@ -6,30 +6,37 @@
   <title>timer</title>
 </head>
 <body>
-  <select class="minute">
-    <option value="25">25</option>
-    <option value="24">24</option>
-    <option value="23">23</option>
-  </select>
-  <span>分</span>
-  <select class="interval">
-    <option value="5">5</option>
-  </select>
-  <span>分</span>
+  <div>
+    <select id="study"></select>
+    <span>分</span>
+    <select id="rest"></select>
+    <span>分</span>
+  </div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
   $(function(){
 
-    var minutes;
+    function time(value){
+      for (var i = 0; i <= 60; i++){
+        var option = `<option value="${i}">${i}</option>`;
+        if(i === 25){
+          if(value === "study"){
+            option = `<option value="${i}" selected>${i}</option>`;
+          }
+        }
+        if(i === 5){
+          if(value === "rest"){
+            option = `<option value="${i}" selected>${i}</option>`;
+          }
+        }
+        $("#"+`${value}`).append(option);
+      }
+    }
 
-    $(".minute").change(function(){
-      minutes = $(".minute").val();
+    time("study");
+    time("rest");
 
-      return minutes;
-    });
-
-    console.log(minutes);
   });
 </script>
 </html>
