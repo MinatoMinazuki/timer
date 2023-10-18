@@ -17,6 +17,9 @@
 <script>
   $(function(){
 
+    var millenium,
+        count = 0;
+
     function time(value){
       for (var i = 0; i <= 60; i++){
         var option = `<option value="${i}">${i}</option>`;
@@ -36,6 +39,31 @@
 
     time("study");
     time("rest");
+
+  function setLastMinutes(max){
+    millenium = new Date();
+    millenium.setMinutes(millenium.getMinutes() + max);
+  }
+
+  function display() {
+    var today = new Date();
+    var hour;
+
+    if(!millenium){
+      setLastMinutes(Number($("#study").val()));
+    }
+
+    if(millenium < today){
+      count++;
+      if(count % 2 !== 0){
+        setLastMinutes(Number($("#rest").val()));
+      } else {
+        setLastMinutes(Number($("#study").val()));
+      }
+    }
+
+    
+  }
 
   });
 </script>
