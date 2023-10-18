@@ -6,13 +6,34 @@
   <title>timer</title>
 </head>
 <body>
-  <div>
-    <select id="study"></select>
+  <div class="selectMinutes">
+    <span>勉強時間：</span>
+    <select id="study" class="studyMinutes"></select>
     <span>分</span>
-    <select id="rest"></select>
+    <span>休憩時間：</span>
+    <select id="rest" class="restMinutes"></select>
     <span>分</span>
+    <div class="button">
+      <button class="dicision">決定</button>
+    </div>
+  </div>
+  <div class="timer">
+    <div class="studyTimer">
+      <span class="minutes">25</span>
+      <span>:</span>
+      <span class="seconds">00</span>
+    </div>
+    <div class="restTimer">
+      <span class="minutes">5</span>
+      <span>:</span>
+      <span class="seconds">00</span>
+    </div>
   </div>
 </body>
+<style>
+  .timer{
+  }
+</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
   $(function(){
@@ -43,11 +64,13 @@
   function setLastMinutes(max){
     millenium = new Date();
     millenium.setMinutes(millenium.getMinutes() + max);
+    console.log(((millenium - (new Date()))/1000)%60);
   }
+
+  // setLastMinutes(Number($("#study").val()));
 
   function display() {
     var today = new Date();
-    var hour;
 
     if(!millenium){
       setLastMinutes(Number($("#study").val()));
@@ -62,7 +85,13 @@
       }
     }
 
-    
+    var milliSec = (millenium - today);
+    var minutes = Math.floor(milliSec / (60*1000));
+    var seconds = Math.floor((milliSec / 1000) % 60);
+
+    $(".studyTimer").find(".minutes").text(minutes);
+    $(".studyTimer").find(".seconds").text(seconds);
+
   }
 
   });
