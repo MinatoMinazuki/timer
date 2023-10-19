@@ -6,32 +6,43 @@
   <title>timer</title>
 </head>
 <body>
-  <div class="selectMinutes">
+  <div class="selectMinutes" data-show="1">
     <span>勉強時間：</span>
     <select id="study" class="studyMinutes"></select>
     <span>分</span>
     <span>休憩時間：</span>
     <select id="rest" class="restMinutes"></select>
     <span>分</span>
-    <div class="button">
-      <button class="dicision">決定</button>
+    <div class="button" unload="clearTimeout(timerDisplay)">
+      <button class="decision">決定</button>
     </div>
   </div>
-  <div class="timer">
-    <div class="studyTimer">
-      <span class="minutes">25</span>
+  <div class="timer" data-show="0">
+    <div class="studyTimer" data-show="1">
+      <span class="minutes"></span>
       <span>:</span>
-      <span class="seconds">00</span>
+      <span class="seconds"></span>
     </div>
-    <div class="restTimer">
-      <span class="minutes">5</span>
+    <div class="restTimer" data-show="0">
+      <span class="minutes"></span>
       <span>:</span>
-      <span class="seconds">00</span>
+      <span class="seconds"></span>
     </div>
   </div>
 </body>
 <style>
-  .timer{
+  .timer[data-show="0"],
+  .selectMinutes[data-show="0"],
+  .studyTimer[data-show="0"],
+  .restTimer[data-show="0"]{
+    display: none;
+  }
+
+  .timer[data-show="1"],
+  .selectMinutes[data-show="1"],
+  .studyTimer[data-show="1"],
+  .restTimer[data-show="1"]{
+    display: block;
   }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -39,7 +50,8 @@
   $(function(){
 
     var millenium,
-        count = 0;
+        count = 0,
+        restFlag = false;
 
     function time(value){
       for (var i = 0; i <= 60; i++){
@@ -64,7 +76,6 @@
   function setLastMinutes(max){
     millenium = new Date();
     millenium.setMinutes(millenium.getMinutes() + max);
-    console.log(((millenium - (new Date()))/1000)%60);
   }
 
   // setLastMinutes(Number($("#study").val()));
@@ -80,19 +91,32 @@
       count++;
       if(count % 2 !== 0){
         setLastMinutes(Number($("#rest").val()));
+        restFlag = true;
       } else {
         setLastMinutes(Number($("#study").val()));
       }
     }
 
+
     var milliSec = (millenium - today);
     var minutes = Math.floor(milliSec / (60*1000));
     var seconds = Math.floor((milliSec / 1000) % 60);
 
-    $(".studyTimer").find(".minutes").text(minutes);
-    $(".studyTimer").find(".seconds").text(seconds);
+    if(restFlag){
+      $(".restTimer").find(".minutes").text(minutes);
+      $(".restTimer").find(".seconds").text(seconds);
+    } else {
+      $(".studyTimer").find(".minutes").text(minutes);
+      $(".studyTimer").find(".seconds").text(seconds);
+    }
 
   }
+
+  $(".decision").on("click", function(){
+    $(".timer").attr("data-show", "1");
+    $(".selectMinutes").attr("data-show", "0");
+  });
+
 
   });
 </script>
