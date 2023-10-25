@@ -29,19 +29,24 @@
       <span class="seconds"></span>
     </div>
   </div>
+  <div class="timeup" data-show="0">
+    <span>タイマーが終了しました。</span>
+  </div>
 </body>
 <style>
   .timer[data-show="0"],
   .selectMinutes[data-show="0"],
   .studyTimer[data-show="0"],
-  .restTimer[data-show="0"]{
+  .restTimer[data-show="0"],
+  .timeup[data-show="0"]{
     display: none;
   }
 
   .timer[data-show="1"],
   .selectMinutes[data-show="1"],
   .studyTimer[data-show="1"],
-  .restTimer[data-show="1"]{
+  .restTimer[data-show="1"],
+  .timeup[data-show="1"]{
     display: block;
   }
 </style>
@@ -54,7 +59,7 @@
         restFlag = false;
 
     function time(value){
-      for (var i = 0; i <= 60; i++){
+      for (var i = 1; i <= 60; i++){
         var option = `<option value="${i}">${i}</option>`;
         if(i === 25){
           if(value === "study"){
@@ -96,17 +101,29 @@
       }
     }
 
+    var currentSeconds = ("00" + today.getSeconds()).slice(-2);
+    var currentMinuts = ("00" + today.getMinutes()).slice(-2);
+    var currentTime = currentMinuts+"-"+currentSeconds;
 
     var milliSec = (millenium - today);
     var minutes = Math.floor(milliSec / (60*1000));
     var seconds = Math.floor((milliSec / 1000) % 60);
 
+    var fMinutes = ("00" + minutes).slice(-2);
+    var fSeconds = ("00" + seconds).slice(-2);
+    var fTime = fMinutes + "-" + fSeconds;
+
+    if(currentTime === fTime){
+      $(".restTimer").attr("data-show", "1");
+      $(".studyTimer").attr("data-show", "0");
+    }
+
     if(restFlag){
-      $(".restTimer").find(".minutes").text(minutes);
-      $(".restTimer").find(".seconds").text(seconds);
+      $(".restTimer").find(".minutes").text(fMinutes);
+      $(".restTimer").find(".seconds").text(fSeconds);
     } else {
-      $(".studyTimer").find(".minutes").text(minutes);
-      $(".studyTimer").find(".seconds").text(seconds);
+      $(".studyTimer").find(".minutes").text(fMinutes);
+      $(".studyTimer").find(".seconds").text(fSeconds);
     }
 
   }
