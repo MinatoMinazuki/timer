@@ -31,6 +31,7 @@
   </div>
   <div class="timeup" data-show="0">
     <span>タイマーが終了しました。</span>
+    <button class="reset">RESET</button>
   </div>
 </body>
 <style>
@@ -98,6 +99,7 @@
         restFlag = true;
       } else {
         setLastMinutes(Number($("#study").val()));
+        restFlag = false;
       }
     }
 
@@ -111,9 +113,14 @@
 
     var fMinutes = ("00" + minutes).slice(-2);
     var fSeconds = ("00" + seconds).slice(-2);
-    var fTime = fMinutes + "-" + fSeconds;
 
-    if(currentTime === fTime){
+    var mellMinutes = ("00" + millenium.getMinutes()).slice(-2);
+    var mellSeconds = ("00" + millenium.getSeconds()).slice(-2);
+    var mellTime = mellMinutes + "-" + mellSeconds;
+
+    console.log(mellTime);
+
+    if(count === 1){
       $(".restTimer").attr("data-show", "1");
       $(".studyTimer").attr("data-show", "0");
     }
@@ -126,14 +133,26 @@
       $(".studyTimer").find(".seconds").text(fSeconds);
     }
 
+    console.log(count);
+
+    if(count === 2){
+      clearInterval(display);
+      $(".timeup").attr("data-show", "1");
+      $(".restTimer").attr("data-show", "0");
+    }
+
   }
 
-  $(".decision").on("click", function(){
-    $(".timer").attr("data-show", "1");
-    $(".selectMinutes").attr("data-show", "0");
-    display();
-    setInterval(display, 1000);
-  });
+    $(".decision").on("click", function(){
+      $(".timer").attr("data-show", "1");
+      $(".selectMinutes").attr("data-show", "0");
+      display();
+      setInterval(display, 1000);
+    });
+
+    $(".reset").on("click", function(){
+      location.reload();
+    })
 
 
   });
