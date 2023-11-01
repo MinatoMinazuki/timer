@@ -6,11 +6,12 @@
   <title>timer</title>
 </head>
 <body>
+  <h1>ポモドーロタイマー</h1>
   <div class="selectMinutes" data-show="1">
-    <span>勉強時間：</span>
+    <span class="studyHour">勉強時間：</span>
     <select id="study" class="studyMinutes"></select>
     <span>分</span>
-    <span>休憩時間：</span>
+    <span class="restHour">休憩時間：</span>
     <select id="rest" class="restMinutes"></select>
     <span>分</span>
     <div class="button">
@@ -19,11 +20,13 @@
   </div>
   <div class="timer" data-show="0">
     <div class="studyTimer" data-show="1">
+      <p class="textPlace studyText">勉強時間</p>
       <span class="minutes"></span>
       <span>:</span>
       <span class="seconds"></span>
     </div>
     <div class="restTimer" data-show="0">
+      <p class="textPlace restText">休憩時間</p>
       <span class="minutes"></span>
       <span>:</span>
       <span class="seconds"></span>
@@ -35,6 +38,10 @@
   </div>
 </body>
 <style>
+  h1{
+    text-align: center;
+  }
+
   .timer[data-show="0"],
   .selectMinutes[data-show="0"],
   .studyTimer[data-show="0"],
@@ -49,6 +56,55 @@
   .restTimer[data-show="1"],
   .timeup[data-show="1"]{
     display: block;
+  }
+
+  .selectMinutes{
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .studyMinutes,
+  .restMinutes{
+    width: auto;
+    height: 30px;
+  }
+
+  .restHour{
+    margin-left: 35px;
+  }
+
+  .button{
+    margin-top: 20px;
+  }
+
+  .textPlace{
+    margin: auto;
+    font-weight: bold;
+    letter-spacing: 5px;
+  }
+
+  .studyText{
+    color: red;
+    margin-bottom: 10px;
+  }
+
+  .restText{
+    color: blue;
+    margin-bottom: 10px;
+  }
+
+  .timer{
+    text-align: center;
+    margin-top: 50px;
+    font-size: 20px;
+  }
+
+  .timeup{
+    text-align: center;
+  }
+  .reset{
+    display: block;
+    margin: 20px auto;
   }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -103,10 +159,6 @@
       }
     }
 
-    var currentSeconds = ("00" + today.getSeconds()).slice(-2);
-    var currentMinuts = ("00" + today.getMinutes()).slice(-2);
-    var currentTime = currentMinuts+"-"+currentSeconds;
-
     var milliSec = (millenium - today);
     var minutes = Math.floor(milliSec / (60*1000));
     var seconds = Math.floor((milliSec / 1000) % 60);
@@ -116,9 +168,6 @@
 
     var mellMinutes = ("00" + millenium.getMinutes()).slice(-2);
     var mellSeconds = ("00" + millenium.getSeconds()).slice(-2);
-    var mellTime = mellMinutes + "-" + mellSeconds;
-
-    console.log(mellTime);
 
     if(count === 1){
       $(".restTimer").attr("data-show", "1");
@@ -132,8 +181,6 @@
       $(".studyTimer").find(".minutes").text(fMinutes);
       $(".studyTimer").find(".seconds").text(fSeconds);
     }
-
-    console.log(count);
 
     if(count === 2){
       clearInterval(display);
@@ -152,7 +199,7 @@
 
     $(".reset").on("click", function(){
       location.reload();
-    })
+    });
 
 
   });
