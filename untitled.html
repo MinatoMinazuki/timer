@@ -36,6 +36,8 @@
     <span>タイマーが終了しました。</span>
     <button class="reset">RESET</button>
   </div>
+  <audio src="alarm/soundEfect.mp3" id="sound"></audio>
+  <button id="soundStop" class="stopBtn" data-show="0"><span>停止<span></button>
 </body>
 <style>
   h1{
@@ -46,7 +48,8 @@
   .selectMinutes[data-show="0"],
   .studyTimer[data-show="0"],
   .restTimer[data-show="0"],
-  .timeup[data-show="0"]{
+  .timeup[data-show="0"],
+  .stopBtn[data-show="0"]{
     display: none;
   }
 
@@ -54,7 +57,8 @@
   .selectMinutes[data-show="1"],
   .studyTimer[data-show="1"],
   .restTimer[data-show="1"],
-  .timeup[data-show="1"]{
+  .timeup[data-show="1"],
+  .stopBtn[data-show="1"]{
     display: block;
   }
 
@@ -113,6 +117,7 @@
 
     var millenium,
         count = 0,
+        soundStopFlagCount = 0;
         restFlag = false;
 
     function time(value){
@@ -172,6 +177,19 @@
     if(count === 1){
       $(".restTimer").attr("data-show", "1");
       $(".studyTimer").attr("data-show", "0");
+      $("#soundStop").attr("data-show", "1");
+
+      if(soundStopFlagCount % 2 === 0){
+        $("#soundStop").on("click", function () {
+          if (isPlaying) {
+            audio.pause();
+          } else {
+            audio.play();
+          }
+          soundStopFlagCount++;
+          $("#soundStop").attr("data-show", "0");
+        });
+      }
     }
 
     if(restFlag){
@@ -186,21 +204,42 @@
       clearInterval(display);
       $(".timeup").attr("data-show", "1");
       $(".restTimer").attr("data-show", "0");
-    }
+      $("#soundStop").attr("data-show", "1");
 
+      if(soundStopFlagCount % 2 === 0){
+        $("#soundStop").on("click", function () {
+          if (isPlaying) {
+            audio.pause();
+          } else {
+            audio.play();
+          }
+          soundStopFlagCount++;
+          $("#soundStop").attr("data-show", "0");
+        });
+      }
+    }
   }
 
-    $(".decision").on("click", function(){
-      $(".timer").attr("data-show", "1");
-      $(".selectMinutes").attr("data-show", "0");
-      display();
-      setInterval(display, 1000);
-    });
+  $(".decision").on("click", function(){
+    $(".timer").attr("data-show", "1");
+    $(".selectMinutes").attr("data-show", "0");
+    display();
+    setInterval(display, 1000);
+  });
 
-    $(".reset").on("click", function(){
-      location.reload();
-    });
+  $(".reset").on("click", function(){
+    location.reload();
+  });
 
+
+  var audio = $("#sound").get(0);
+  var isPlaying = false;
+  audio.onplaying = function() {
+    isPlaying = true;
+  };
+  audio.onpause = function() {
+    isPlaying = false;
+  }
 
   });
 </script>
