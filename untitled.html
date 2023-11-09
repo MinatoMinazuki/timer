@@ -115,10 +115,10 @@
 <script>
   $(function(){
 
-    var millenium,
-        count = 0,
-        soundStopFlagCount = 0;
-        restFlag = false;
+    var milleniumStudy,
+        milleniumRest,
+        countStudy = 0,
+        countRest = 0;
 
     function time(value){
       for (var i = 1; i <= 60; i++){
@@ -140,106 +140,121 @@
     time("study");
     time("rest");
 
-  function setLastMinutes(max){
-    millenium = new Date();
-    millenium.setMinutes(millenium.getMinutes() + max);
-  }
-
-  function display() {
-
-    var today = new Date();
-
-    if(!millenium){
-      setLastMinutes(Number($("#study").val()));
+    function setStudyMinutes(max){
+      milleniumStudy = new Date();
+      milleniumStudy.setMinutes(milleniumStudy.getMinutes() + max);
     }
 
-    if(millenium < today){
-      count++;
-      if(count % 2 !== 0){
-        setLastMinutes(Number($("#rest").val()));
-        restFlag = true;
-      } else {
-        setLastMinutes(Number($("#study").val()));
-        restFlag = false;
+    function setRestMinutes(max){
+      milleniumRest = new Date();
+      milleniumRest.setMinutes(milleniumRest.getMinutes() + max);
+    }
+
+    function displayStudyTime() {
+
+      var today = new Date();
+
+      if(!milleniumStudy){
+        setStudyMinutes(Number($("#study").val()));
       }
-    }
 
-    var milliSec = (millenium - today);
-    var minutes = Math.floor(milliSec / (60*1000));
-    var seconds = Math.floor((milliSec / 1000) % 60);
-
-    var fMinutes = ("00" + minutes).slice(-2);
-    var fSeconds = ("00" + seconds).slice(-2);
-
-    var mellMinutes = ("00" + millenium.getMinutes()).slice(-2);
-    var mellSeconds = ("00" + millenium.getSeconds()).slice(-2);
-
-    if(count === 1){
-      $(".restTimer").attr("data-show", "1");
-      $(".studyTimer").attr("data-show", "0");
-      $("#soundStop").attr("data-show", "1");
-
-      if(soundStopFlagCount % 2 === 0){
-        $("#soundStop").on("click", function () {
-          if (isPlaying) {
-            audio.pause();
-          } else {
-            audio.play();
-          }
-          soundStopFlagCount++;
-          $("#soundStop").attr("data-show", "0");
-        });
+      if(milleniumStudy < today){
+        countStudy++;
       }
-    }
 
-    if(restFlag){
-      $(".restTimer").find(".minutes").text(fMinutes);
-      $(".restTimer").find(".seconds").text(fSeconds);
-    } else {
+      var milliSec = (milleniumStudy - today);
+      var minutes = Math.floor(milliSec / (60*1000));
+      var seconds = Math.floor((milliSec / 1000) % 60);
+
+      var fMinutes = ("00" + minutes).slice(-2);
+      var fSeconds = ("00" + seconds).slice(-2);
+
       $(".studyTimer").find(".minutes").text(fMinutes);
       $(".studyTimer").find(".seconds").text(fSeconds);
-    }
 
-    if(count === 2){
-      clearInterval(display);
-      $(".timeup").attr("data-show", "1");
-      $(".restTimer").attr("data-show", "0");
-      $("#soundStop").attr("data-show", "1");
-
-      if(soundStopFlagCount % 2 === 0){
-        $("#soundStop").on("click", function () {
-          if (isPlaying) {
-            audio.pause();
-          } else {
-            audio.play();
-          }
-          soundStopFlagCount++;
-          $("#soundStop").attr("data-show", "0");
-        });
+      if(countStudy === 1){
+        $(".restTimer").attr("data-show", "1");
+        $(".studyTimer").attr("data-show", "0");
+        $("#soundStop").attr("data-show", "1");
+        if (isPlaying) {
+          audio.pause();
+        } else {
+          audio.play();
+        }
       }
     }
-  }
 
-  $(".decision").on("click", function(){
-    $(".timer").attr("data-show", "1");
-    $(".selectMinutes").attr("data-show", "0");
-    display();
-    setInterval(display, 1000);
-  });
+    function displayRestTime(){
 
-  $(".reset").on("click", function(){
-    location.reload();
-  });
+      var today = new Date;
 
+      if(!milleniumRest){
+        setRestMinutes(Number($("#rest").val()));
+      }
 
-  var audio = $("#sound").get(0);
-  var isPlaying = false;
-  audio.onplaying = function() {
-    isPlaying = true;
-  };
-  audio.onpause = function() {
-    isPlaying = false;
-  }
+      if(milleniumRest < today){
+        countRest = true;
+      }
+
+      var milliSec = (milleniumRest - today);
+      var minutes = Math.floor(milliSec / (60*1000));
+      var seconds = Math.floor((milliSec / 1000) % 60);
+
+      var fMinutes = ("00" + minutes).slice(-2);
+      var fSeconds = ("00" + seconds).slice(-2);
+
+      $(".restTimer").attr("data-show", "1");
+      $(".studyTimer").attr("data-show", "0");
+
+      $(".restTimer").find(".minutes").text(fMinutes);
+      $(".restTimer").find(".seconds").text(fSeconds);
+
+      console.log(milleniumRest+"mill");
+      console.log(today);
+
+      if(countRest === 1){
+        clearInterval(displayRestTime);
+        $(".timeup").attr("data-show", "1");
+        $(".restTimer").attr("data-show", "0");
+        if (isPlaying) {
+          audio.pause();
+        } else {
+          audio.play();
+        }
+      }
+    }
+
+    $("#soundStop").on("click", function () {
+      if (isPlaying) {
+        audio.pause();
+      } else {
+        audio.play();
+      }
+      clearInterval(displayStudyTime);
+      $("#soundStop").attr("data-show", "0");
+      displayRestTime();
+      setInterval(displayRestTime, 1000);
+    });
+
+    $(".decision").on("click", function(){
+      $(".timer").attr("data-show", "1");
+      $(".selectMinutes").attr("data-show", "0");
+      displayStudyTime();
+      setInterval(displayStudyTime, 1000);
+    });
+
+    $(".reset").on("click", function(){
+      location.reload();
+    });
+
+    var audio = $("#sound").get(0);
+    var isPlaying = false;
+    audio.onplaying = function() {
+      isPlaying = true;
+    };
+    audio.onpause = function() {
+      isPlaying = false;
+    }
 
   });
 </script>
