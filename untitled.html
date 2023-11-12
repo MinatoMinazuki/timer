@@ -36,7 +36,7 @@
     <span>タイマーが終了しました。</span>
     <button class="reset">RESET</button>
   </div>
-  <audio src="alarm/soundEfect.mp3" id="sound"></audio>
+  <audio loop src="alarm/soundEfect.mp3" id="sound"></audio>
   <button id="soundStop" class="stopBtn" data-show="0"><span>停止<span></button>
 </body>
 <style>
@@ -106,7 +106,8 @@
   .timeup{
     text-align: center;
   }
-  .reset{
+  .reset,
+  .stopBtn{
     display: block;
     margin: 20px auto;
   }
@@ -118,7 +119,8 @@
     var milleniumStudy,
         milleniumRest,
         countStudy = 0,
-        countRest = 0;
+        countRest = 0,
+        countSound = 0;
 
     function time(value){
       for (var i = 1; i <= 60; i++){
@@ -163,7 +165,7 @@
       }
 
       var milliSec = (milleniumStudy - today);
-      var minutes = Math.floor(milliSec / (60*1000));
+      var minutes = Math.floor(milliSec / (60 * 1000));
       var seconds = Math.floor((milliSec / 1000) % 60);
 
       var fMinutes = ("00" + minutes).slice(-2);
@@ -173,9 +175,9 @@
       $(".studyTimer").find(".seconds").text(fSeconds);
 
       if(countStudy === 1){
-        $(".restTimer").attr("data-show", "1");
-        $(".studyTimer").attr("data-show", "0");
+        clearInterval(displayStudyTime);
         $("#soundStop").attr("data-show", "1");
+        $(".studyTimer").attr("data-show", "0");
         if (isPlaying) {
           audio.pause();
         } else {
@@ -197,22 +199,20 @@
       }
 
       var milliSec = (milleniumRest - today);
-      var minutes = Math.floor(milliSec / (60*1000));
+      var minutes = Math.floor(milliSec / (60 * 1000));
       var seconds = Math.floor((milliSec / 1000) % 60);
 
       var fMinutes = ("00" + minutes).slice(-2);
       var fSeconds = ("00" + seconds).slice(-2);
-
-      $(".restTimer").attr("data-show", "1");
-      $(".studyTimer").attr("data-show", "0");
 
       $(".restTimer").find(".minutes").text(fMinutes);
       $(".restTimer").find(".seconds").text(fSeconds);
 
       if(countRest === 1){
         clearInterval(displayRestTime);
-        $(".timeup").attr("data-show", "1");
         $(".restTimer").attr("data-show", "0");
+        $(".timeup").attr("data-show", "1");
+        $("#soundStop").attr("data-show", "1");
         if (isPlaying) {
           audio.pause();
         } else {
@@ -227,7 +227,13 @@
       } else {
         audio.play();
       }
-      clearInterval(displayStudyTime);
+      countSound++;
+      if(countSound === 1){
+        $(".restTimer").attr("data-show", "1");
+      } else if(countSound === 2){
+        $(".restTimer").attr("data-show", "0");
+        $(".reset").trigger("click");
+      }
       $("#soundStop").attr("data-show", "0");
       displayRestTime();
       setInterval(displayRestTime, 1000);
