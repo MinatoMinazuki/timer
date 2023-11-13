@@ -37,7 +37,7 @@
     <button class="reset">RESET</button>
   </div>
   <audio loop src="alarm/soundEfect.mp3" id="sound"></audio>
-  <button id="soundStop" class="stopBtn" data-show="0"><span>停止<span></button>
+  <button id="soundStop" class="stopBtn" data-show="0">停止</button>
 </body>
 <style>
   h1{
@@ -120,7 +120,9 @@
         milleniumRest,
         countStudy = 0,
         countRest = 0,
-        countSound = 0;
+        countSound = 0,
+        displayStudy,
+        dsplayRest;
 
     function time(value){
       for (var i = 1; i <= 60; i++){
@@ -175,7 +177,7 @@
       $(".studyTimer").find(".seconds").text(fSeconds);
 
       if(countStudy === 1){
-        clearInterval(displayStudyTime);
+        clearInterval(displayStudy);
         $("#soundStop").attr("data-show", "1");
         $(".studyTimer").attr("data-show", "0");
         if (isPlaying) {
@@ -184,6 +186,7 @@
           audio.play();
         }
       }
+      console.log(countStudy);
     }
 
     function displayRestTime(){
@@ -209,7 +212,7 @@
       $(".restTimer").find(".seconds").text(fSeconds);
 
       if(countRest === 1){
-        clearInterval(displayRestTime);
+        clearInterval(displayRest);
         $(".restTimer").attr("data-show", "0");
         $(".timeup").attr("data-show", "1");
         $("#soundStop").attr("data-show", "1");
@@ -219,6 +222,7 @@
           audio.play();
         }
       }
+      console.log(countRest);
     }
 
     $("#soundStop").on("click", function () {
@@ -236,14 +240,14 @@
       }
       $("#soundStop").attr("data-show", "0");
       displayRestTime();
-      setInterval(displayRestTime, 1000);
+      displayRest = setInterval(displayRestTime, 1000);
     });
 
     $(".decision").on("click", function(){
       $(".timer").attr("data-show", "1");
       $(".selectMinutes").attr("data-show", "0");
       displayStudyTime();
-      setInterval(displayStudyTime, 1000);
+      displayStudy = setInterval(displayStudyTime, 1000);
     });
 
     $(".reset").on("click", function(){
